@@ -2,7 +2,7 @@
   "name": "calc",
   "displayName": "calc",
   "description": "Calculate extension for vscode",
-  "version": "2.3.2",
+  "version": "99.99.98",
   "publisher": "raidou",
   "license": "MIT",
   "author": "weirongxu.raidou@gmail.com",
@@ -23,7 +23,8 @@
   ],
   "main": "./lib/index.js",
   "files": [
-    "lib"
+    "lib",
+    "logo"
   ],
   "icon": "logo/calc-logo.png",
   "contributes": {
@@ -47,7 +48,19 @@
     ],
     "configuration": {
       "type": "object",
-      "title": "Calc"
+      "title": "Calc",
+      "properties": {
+        "calc.suggestionOrder": {
+          "type": "string",
+          "enum": [
+            "appendFirst",
+            "replaceFirst",
+            "autoRecent"
+          ],
+          "default": "appendFirst",
+          "description": "Controls the order of completion suggestions: append-first, replace-first, or defer to VS Code's recent selection."
+        }
+      }
     }
   },
   "scripts": {
@@ -65,6 +78,7 @@
     "@raidou/eslint-config-base": "^1.5.0",
     "@types/node": "^18.0.0",
     "@types/vscode": "^1.68.0",
+    "@vscode/vsce": "^3.6.0",
     "editor-calc": "^2.1.0",
     "esbuild": "^0.14.47",
     "eslint": "^8.18.0",
@@ -78,5 +92,8 @@
     "id": "3d9e0419-faa0-41ab-b157-68a4c7a905ab",
     "publisherDisplayName": "raidou",
     "publisherId": "4a1cc615-b16d-4e6b-b03f-da440b8589f4"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.13"
   }
 }
