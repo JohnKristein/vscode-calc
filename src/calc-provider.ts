@@ -377,24 +377,34 @@ export class CalcProvider implements CompletionItemProvider {
       this.clearHighlight().catch(this.onError);
       this.highlight(expressionRange).catch(this.onError);
 
-      const yearsLabel = `${yearsF.toFixed(2)} 年`;
-      const monthsLabel = `${monthsF.toFixed(2)} 月`;
-      const daysLabel = `${days} 天`;
+      const yearsValue = yearsF.toFixed(2);
+      const monthsValue = monthsF.toFixed(2);
+      const daysValue = String(days);
 
-      const makeAppendItem = (label: string): CompletionItem => ({
-        label,
+      const yearsLabel = `${yearsValue} 年`;
+      const monthsLabel = `${monthsValue} 月`;
+      const daysLabel = `${daysValue} 天`;
+
+      const makeAppendItem = (label: string, insertValue: string): CompletionItem => ({
+        label, // 显示：带量词，便于区分（年/⽉/天）
         kind: CompletionItemKind.Constant,
         detail: 'calc append',
         documentation: `\`${exprLine.trimStart()} ${label}\``,
         range: expressionEndRange,
         additionalTextEdits: [
-          TextEdit.insert(expressionWithEqualSignRange.end, ` ${label}`),
+          TextEdit.insert(expressionWithEqualSignRange.end, ` ${insertValue}`),
         ],
         insertText: '',
       });
 
-      // 顺序：年 → 月 → 天
-      return [makeAppendItem(yearsLabel), makeAppendItem(monthsLabel), makeAppendItem(daysLabel)];
+      // 顺序：月 → 年 → 天；显式设置 sortText，防止 VS Code 按 label 重新排序
+      const monthItem = makeAppendItem(monthsLabel, monthsValue);
+      const yearItem = makeAppendItem(yearsLabel, yearsValue);
+      const dayItem = makeAppendItem(daysLabel, daysValue);
+      monthItem.sortText = '0000';
+      yearItem.sortText = '0001';
+      dayItem.sortText = '0002';
+      return [monthItem, yearItem, dayItem];
     }
 
     const lineCalcResult = this.calculateLine(position, exprLine);
